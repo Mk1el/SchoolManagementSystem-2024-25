@@ -16,6 +16,10 @@ public class User {
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
+    @Column(length = 30)
     private Role role;
+
+  public User(String username, Role role) {
+  }
 }
 

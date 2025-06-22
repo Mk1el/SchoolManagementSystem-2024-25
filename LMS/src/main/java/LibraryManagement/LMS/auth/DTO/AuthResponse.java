@@ -1,9 +1,13 @@
 package LibraryManagement.LMS.auth.DTO;
 
+import LibraryManagement.LMS.auth.User;
+
 public class AuthResponse {
     public String token;
+    public User user;
+    public AuthResponse(String token, User user){
 
-    public AuthResponse(String token){
-        this.token = token;
+      this.token = token;
+      this.user = new User(user.getUsername(), user.getRole());
     }
 }
