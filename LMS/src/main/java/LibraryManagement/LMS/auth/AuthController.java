@@ -27,9 +27,13 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.username);
         user.setPassword(encoder.encode(request.password));
-        user.setRole(Role.USER); // default role
+        if (request.role != null && request.role.equalsIgnoreCase("LIBRARIAN")){
+            user.setRole(Role.LIBRARIAN);
+        }else{
+            user.setRole(Role.USER);
+        }
         userRepository.save(user);
-        return "User registered";
+        return "User registered as " + user.getRole();
     }
 
     @PostMapping("/login")
