@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
       next: (res) => {
         localStorage.setItem('auth_token', res.token);
         localStorage.setItem('auth_user', JSON.stringify(res.user));
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/library']);
       },
       error: (err) => {
         console.error('Login failed', err);
