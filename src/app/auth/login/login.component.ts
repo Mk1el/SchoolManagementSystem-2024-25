@@ -69,13 +69,13 @@ export class LoginComponent implements OnInit {
 
         switch (role) {
           case 'SUPER_USER':
-            this.router.navigate(['/config']);
+            this.router.navigate(['/layout/config-schools']);
             break;
           case 'LIBRARIAN':
-            this.router.navigate(['/library']);
+            this.router.navigate(['/layout/library']);
             break;
           case 'USER':
-            this.router.navigate(['/student']);
+            this.router.navigate(['/layout/students']);
             break;
           default:
             this.router.navigate(['/']);

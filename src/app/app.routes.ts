@@ -26,7 +26,7 @@ component: ConfigSchoolsComponent,
 data: { title: 'Schools-Configuration' }
 },
 {
-path: 'student',
+path: 'students',
 component: StudentsComponent,
 data: { title: 'Students' }
 },
