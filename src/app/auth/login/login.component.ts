@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -34,7 +35,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -48,17 +50,43 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
+
     this.loading = true;
     const credentials = this.loginForm.value;
 
     this.authService.login(credentials).subscribe({
       next: (res) => {
+        console.log('Login response:', res)
         localStorage.setItem('auth_token', res.token);
         localStorage.setItem('auth_user', JSON.stringify(res.user));
-        this.router.navigate(['/library']);
+
+        const role = res.user?.role?.toUpperCase();
+
+        this.snackBar.open(`Login successful as ${role}`, 'Close', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+
+        switch (role) {
+          case 'SUPER_USER':
+            this.router.navigate(['/layout/config-schools']);
+            break;
+          case 'LIBRARIAN':
+            this.router.navigate(['/layout/library']);
+            break;
+          case 'USER':
+            this.router.navigate(['/layout/students']);
+            break;
+          default:
+            this.router.navigate(['/']);
+            break;
+        }
       },
       error: (err) => {
-        console.error('Login failed', err);
+        this.snackBar.open('Login failed. Check credentials.', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
         this.loading = false;
       }
     });
