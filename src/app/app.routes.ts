@@ -8,7 +8,6 @@ import { ConfigSchoolsComponent } from './config-schools/config-schools.componen
 import { StudentsComponent } from './students/students.component';
 
 export const routes: Routes = [
-// Public route for login
 {
 path: '',
 component: LoginComponent,
