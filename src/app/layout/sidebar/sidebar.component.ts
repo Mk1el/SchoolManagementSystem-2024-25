@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, MatListModule, MatIconModule, RouterModule],
+  imports: [CommonModule, MatListModule, MatIconModule, MatExpansionModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -37,5 +38,10 @@ export class SidebarComponent implements OnInit{
       item.roles.includes(this.role)
     )
   }
+
+  hasRole(allowed: string[]): boolean {
+  return allowed.includes(this.role);
+}
+
 
 }

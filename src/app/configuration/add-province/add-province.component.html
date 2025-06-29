@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Add New Province</h2>
+
+<form [formGroup]="provinceForm" (ngSubmit)="submit()" class="province-form">
+  <mat-form-field appearance="fill" class="w-100 mb-3">
+    <mat-label>Province Name</mat-label>
+    <input matInput formControlName="name" placeholder="e.g. Rift Valley" />
+  </mat-form-field>
+
+  <div class="text-end">
+    <button mat-flat-button color="primary" [disabled]="provinceForm.invalid">
+      Save
+    </button>
+    <button mat-button type="button" (click)="close()">Cancel</button>
+  </div>
+</form>

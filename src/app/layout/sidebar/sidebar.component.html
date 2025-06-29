@@ -3,4 +3,33 @@
     <mat-icon matListIcon>{{ item.icon }}</mat-icon>
     <span matLine>{{ item.label }}</span>
   </a>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon>school</mat-icon>
+        School Configuration
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-nav-list>
+      <a mat-list-item routerLink="/layout/config-schools" *ngIf="hasRole(['SUPER_USER'])">
+        <mat-icon matListIcon>domain</mat-icon>
+        <span matLine>Configure Schools</span>
+      </a>
+      <a mat-list-item routerLink="/layout/provinces" *ngIf="hasRole(['SUPER_USER'])">
+        <mat-icon matListIcon>place</mat-icon>
+        <span matLine>Provinces</span>
+      </a>
+      <a mat-list-item routerLink="/layout/regions" *ngIf="hasRole(['SUPER_USER'])">
+        <mat-icon matListIcon>map</mat-icon>
+        <span matLine>Regions</span>
+      </a>
+      <a mat-list-item routerLink="/layout/sub-regions" *ngIf="hasRole(['SUPER_USER'])">
+        <mat-icon matListIcon>location_city</mat-icon>
+        <span matLine>Sub-Regions</span>
+      </a>
+    </mat-nav-list>
+  </mat-expansion-panel>
+
 </mat-nav-list>
