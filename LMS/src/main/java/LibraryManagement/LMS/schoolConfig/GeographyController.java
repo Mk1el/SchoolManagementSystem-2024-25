@@ -17,17 +17,17 @@ public class GeographyController {
   public Province addProvince(@RequestBody Province p) {
     return geoService.createProvince(p);
   }
-  @PreAuthorize("hasAuthority('SUPER_USER')")
+  @PreAuthorize("hasRole('SUPER_USER')")
   @PostMapping("/regions/{provinceId}")
   public Region addRegion(@PathVariable Long provinceId, @RequestBody Region r) {
     return geoService.createRegion(provinceId, r);
   }
-  @PreAuthorize("hasAuthority('SUPER_USER')")
+//  @PreAuthorize("hasAuthority('SUPER_USER')")
   @PostMapping("/sub-regions/{regionId}")
   public SubRegion addSubRegion(@PathVariable Long regionId, @RequestBody SubRegion sr) {
     return geoService.createSubRegion(regionId, sr);
   }
-  @PreAuthorize("hasAuthority('SUPER_USER')")
+//  @PreAuthorize("hasAuthority('SUPER_USER')")
   @GetMapping("/provinces")
   public List<Province> listProvinces() {
     return geoService.getAllProvinces();
