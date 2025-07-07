@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GeographyService {
@@ -50,6 +51,7 @@ public class GeographyService {
     return regionRepo.save(region);
   }
 
+
   public List<Region> getAllRegions() {
     return regionRepo.findAll();
   }
@@ -73,9 +75,13 @@ public class GeographyService {
     return subRegionRepo.save(subRegion);
   }
 
-  public List<SubRegion> getAllSubRegions() {
-    return subRegionRepo.findAll();
+  public List<SubRegionDTO> getAllSubRegions() {
+    return subRegionRepo.findAll()
+      .stream()
+      .map(SubRegionDTO::new)
+      .collect(Collectors.toList());
   }
+
 
   public SubRegion updateSubRegion(Long id, SubRegion updated) {
     SubRegion existing = subRegionRepo.findById(id)

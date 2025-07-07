@@ -1,5 +1,7 @@
 package LibraryManagement.LMS.schoolConfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,9 +16,11 @@ public class Region {
   private String name;
 
   @ManyToOne
+  @JsonIgnoreProperties("regions")
   @JoinColumn(name = "province_id")
   private Province province;
 
   @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+  @JsonManagedReference
   private List<SubRegion> subRegions;
 }
