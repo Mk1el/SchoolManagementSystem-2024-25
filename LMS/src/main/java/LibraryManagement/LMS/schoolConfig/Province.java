@@ -1,5 +1,6 @@
 package LibraryManagement.LMS.schoolConfig;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,5 +15,6 @@ public class Province {
 
   // Relationships
   @OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
+  @JsonBackReference
   private List<Region> regions;
 }

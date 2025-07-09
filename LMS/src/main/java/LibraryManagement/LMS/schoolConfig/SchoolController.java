@@ -1,6 +1,7 @@
 package LibraryManagement.LMS.schoolConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,12 +11,13 @@ import java.util.List;
 public class SchoolController {
   @Autowired
   private SchoolService schoolService;
-
-  @PostMapping("/create/{subRegionId}")
-  public School createSchool(@PathVariable Long subRegionId, @RequestBody School school) {
-    return schoolService.createSchool(subRegionId, school);
+  @PreAuthorize("hasRole('SUPER_USER')")
+  @PostMapping("/add")
+  public School createSchool(@RequestBody School school) {
+    return schoolService.createSchool( school);
   }
 
+  @PreAuthorize("hasRole('SUPER_USER')")
   @GetMapping
   public List<School> getAll() {
     return schoolService.getAllSchools();

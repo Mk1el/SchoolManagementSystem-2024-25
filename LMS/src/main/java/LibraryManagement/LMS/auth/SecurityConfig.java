@@ -47,7 +47,7 @@ public class SecurityConfig {
         .requestMatchers("/auth/register", "/auth/login").permitAll()
           .requestMatchers("/api/geography/**").authenticated()
 //        .requestMatchers("/api/geography/**").hasRole("SUPER_USER")
-//        .requestMatchers("/api/schools/**").hasRole("SUPER_USER")
+        .requestMatchers("/api/schools/**").authenticated()
         .requestMatchers(HttpMethod.GET, "/books/**").authenticated()
         .requestMatchers("/books/**").hasRole("LIBRARIAN")
         .requestMatchers("/borrow/**").authenticated()

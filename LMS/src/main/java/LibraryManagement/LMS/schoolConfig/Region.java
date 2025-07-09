@@ -1,5 +1,6 @@
 package LibraryManagement.LMS.schoolConfig;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ public class Region {
   private String name;
 
   @ManyToOne
-  @JsonIgnoreProperties("regions")
+  @JsonBackReference
   @JoinColumn(name = "province_id")
   private Province province;
 
