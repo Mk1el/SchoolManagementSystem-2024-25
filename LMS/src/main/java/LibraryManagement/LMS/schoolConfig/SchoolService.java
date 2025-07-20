@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional; // Import Trans
 import java.util.Base64;
 import java.util.List;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Service
 public class SchoolService {
 
@@ -58,6 +60,9 @@ public class SchoolService {
       throw new RuntimeException("School not found with id: " + id);
     }
     schoolRepo.deleteById(id);
+  }
+  public School getSchoolById(Long id){
+    return schoolRepo.findById(id).orElseThrow(()-> new RuntimeException("School not found with id" +id));
   }
 
   // The update method is now complete and works with the DTO

@@ -14,7 +14,7 @@ import java.util.List;
 public class SchoolController {
 
   @Autowired
-  private SchoolService schoolService; // Only the service is needed
+  private SchoolService schoolService;
 
   @PreAuthorize("hasRole('SUPER_USER')")
   @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +28,12 @@ public class SchoolController {
   @GetMapping
   public List<School> getAll() {
     return schoolService.getAllSchools();
+  }
+  @PreAuthorize("hasRole('SUPER_USER')")
+  @GetMapping("/{id}")
+  public ResponseEntity<School> getById(@PathVariable Long id){
+    School school = schoolService.getSchoolById(id);
+    return ResponseEntity.ok(school);
   }
 
   @PreAuthorize("hasRole('SUPER_USER')")
