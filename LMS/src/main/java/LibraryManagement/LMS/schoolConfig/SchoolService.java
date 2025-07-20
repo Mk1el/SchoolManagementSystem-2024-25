@@ -2,48 +2,91 @@ package LibraryManagement.LMS.schoolConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Import Transactional
 
+import java.util.Base64;
 import java.util.List;
 
 @Service
 public class SchoolService {
+
   @Autowired
   private SchoolRepository schoolRepo;
+
   @Autowired
   private SubRegionRepository subRegionRepo;
-  // In SchoolService.java
 
-  // The method signature now only takes a School object
-  School createSchool(School school) {
-    // 1. Get the subRegionId from the incoming School object.
-    //    It is assumed that the SubRegion object within the School object has its ID set.
-    if (school.getSubRegion() == null || school.getSubRegion().getId() == null) {
-      throw new IllegalArgumentException("SubRegion ID must be provided to create a school.");
+  // The create method now accepts the DTO and contains all logic
+  @Transactional // Ensures all database operations succeed or fail together
+  public School createSchool(SchoolDTO schoolDTO) {
+    School school = new School();
+    school.setName(schoolDTO.getName());
+    school.setEmail(schoolDTO.getEmail());
+    school.setPhone(schoolDTO.getPhone());
+    school.setMotto(schoolDTO.getMotto());
+    school.setColors(schoolDTO.getColors());
+
+    // Validate and set SchoolLevel
+    try {
+      SchoolLevel level = SchoolLevel.valueOf(schoolDTO.getLevel().toUpperCase());
+      school.setLevel(level);
+    } catch (IllegalArgumentException e) {
+      throw new RuntimeException("Invalid school level provided: " + schoolDTO.getLevel());
     }
-    Long subRegionId = school.getSubRegion().getId();
 
-    // 2. Find the SubRegion from the database using the ID.
-    //    This is a crucial step to ensure you are associating with a real, managed entity.
-    SubRegion subRegion = subRegionRepo.findById(subRegionId)
-      .orElseThrow(() -> new RuntimeException("SubRegion not found with id: " + subRegionId));
-
-    // 3. Set the managed SubRegion entity on the school object.
+    // Find and associate the SubRegion
+    SubRegion subRegion = subRegionRepo.findById(schoolDTO.getSubRegionId())
+      .orElseThrow(() -> new RuntimeException("SubRegion not found with id: " + schoolDTO.getSubRegionId()));
     school.setSubRegion(subRegion);
 
-    // 4. Save the school.
+    // Decode and set the image
+    if (schoolDTO.getImageBase64() != null && !schoolDTO.getImageBase64().isEmpty()) {
+      byte[] imageBytes = Base64.getDecoder().decode(schoolDTO.getImageBase64());
+      school.setImage(imageBytes);
+    }
+
     return schoolRepo.save(school);
   }
-  public List<School> getAllSchools(){
+
+  public List<School> getAllSchools() {
     return schoolRepo.findAll();
   }
+
+  @Transactional
   public void deleteSchool(Long id) {
+    if (!schoolRepo.existsById(id)) {
+      throw new RuntimeException("School not found with id: " + id);
+    }
     schoolRepo.deleteById(id);
   }
 
-  public School updateSchool(Long id, School updated) {
-    School school = schoolRepo.findById(id).orElseThrow();
-    school.setName(updated.getName());
-    school.setLevel(updated.getLevel());
-    return schoolRepo.save(school);
+  // The update method is now complete and works with the DTO
+  @Transactional
+  public School updateSchool(Long id, SchoolDTO schoolDTO) {
+    School schoolToUpdate = schoolRepo.findById(id)
+      .orElseThrow(() -> new RuntimeException("School not found with id: " + id));
+
+    // Update all fields from the DTO
+    schoolToUpdate.setName(schoolDTO.getName());
+    schoolToUpdate.setEmail(schoolDTO.getEmail());
+    schoolToUpdate.setPhone(schoolDTO.getPhone());
+    schoolToUpdate.setMotto(schoolDTO.getMotto());
+    schoolToUpdate.setColors(schoolDTO.getColors());
+    schoolToUpdate.setLevel(SchoolLevel.valueOf(schoolDTO.getLevel().toUpperCase()));
+
+    // Update SubRegion if it's different
+    if (!schoolToUpdate.getSubRegion().getId().equals(schoolDTO.getSubRegionId())) {
+      SubRegion newSubRegion = subRegionRepo.findById(schoolDTO.getSubRegionId())
+        .orElseThrow(() -> new RuntimeException("SubRegion not found with id: " + schoolDTO.getSubRegionId()));
+      schoolToUpdate.setSubRegion(newSubRegion);
+    }
+
+    // Update image if a new one is provided
+    if (schoolDTO.getImageBase64() != null && !schoolDTO.getImageBase64().isEmpty()) {
+      byte[] imageBytes = Base64.getDecoder().decode(schoolDTO.getImageBase64());
+      schoolToUpdate.setImage(imageBytes);
+    }
+
+    return schoolRepo.save(schoolToUpdate);
   }
 }

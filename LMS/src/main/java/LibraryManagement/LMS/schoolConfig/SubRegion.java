@@ -1,5 +1,6 @@
 package LibraryManagement.LMS.schoolConfig;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,8 +13,8 @@ public class SubRegion {
   private Long id;
   private String name;
 
-  @ManyToOne
-  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "region_id")
+  @JsonBackReference
   private Region region;
 }

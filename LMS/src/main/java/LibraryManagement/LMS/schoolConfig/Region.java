@@ -16,12 +16,13 @@ public class Region {
   private Long id;
   private String name;
 
-  @ManyToOne
-  @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "province_id")
+  @JsonBackReference
+
   private Province province;
 
-  @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<SubRegion> subRegions;
 }

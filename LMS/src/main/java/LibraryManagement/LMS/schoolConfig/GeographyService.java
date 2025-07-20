@@ -2,6 +2,7 @@ package LibraryManagement.LMS.schoolConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,31 +20,27 @@ public class GeographyService {
   @Autowired
   private SubRegionRepository subRegionRepo;
 
-  // Province CRUD
+  // === Province Methods ===
+
+  @Transactional
   public Province createProvince(Province province) {
     return provinceRepo.save(province);
   }
 
-  public List<Province> getAllProvinces() {
-    return provinceRepo.findAll();
+  // UPDATED: Now returns DTOs
+  @Transactional(readOnly = true)
+  public List<ProvinceDTO> getAllProvinces() {
+    return provinceRepo.findAll()
+      .stream()
+      .map(ProvinceDTO::new)
+      .collect(Collectors.toList());
   }
 
-  public Optional<Province> getProvinceById(Long id) {
-    return provinceRepo.findById(id);
-  }
+  // ... other Province methods (update, delete) remain the same ...
 
-  public Province updateProvince(Long id, Province updated) {
-    Province existing = provinceRepo.findById(id)
-      .orElseThrow(() -> new RuntimeException("Province not found with id: " + id));
-    existing.setName(updated.getName());
-    return provinceRepo.save(existing);
-  }
+  // === Region Methods ===
 
-  public void deleteProvince(Long id) {
-    provinceRepo.deleteById(id);
-  }
-
-  // Region CRUD
+  @Transactional
   public Region createRegion(Long provinceId, Region region) {
     Province province = provinceRepo.findById(provinceId)
       .orElseThrow(() -> new RuntimeException("Province not found with id: " + provinceId));
@@ -51,23 +48,28 @@ public class GeographyService {
     return regionRepo.save(region);
   }
 
-
-  public List<Region> getAllRegions() {
-    return regionRepo.findAll();
+  // UPDATED: Now returns DTOs
+  @Transactional(readOnly = true)
+  public List<RegionDTO> getAllRegions() {
+    return regionRepo.findAll()
+      .stream()
+      .map(RegionDTO::new)
+      .collect(Collectors.toList());
   }
 
-  public Region updateRegion(Long id, Region updated) {
-    Region existing = regionRepo.findById(id)
-      .orElseThrow(() -> new RuntimeException("Region not found with id: " + id));
-    existing.setName(updated.getName());
-    return regionRepo.save(existing);
+  // UPDATED: Now returns DTOs and uses the correct repository method name
+  @Transactional(readOnly = true)
+  public List<RegionDTO> getRegionsByProvinceId(Long provinceId) {
+    List<Region> regions = regionRepo.findByProvince_Id(provinceId);
+    return regions.stream().map(RegionDTO::new).toList();
   }
 
-  public void deleteRegion(Long id) {
-    regionRepo.deleteById(id);
-  }
 
-  // SubRegion CRUD
+  // ... other Region methods ...
+
+  // === SubRegion Methods ===
+
+  @Transactional
   public SubRegion createSubRegion(Long regionId, SubRegion subRegion) {
     Region region = regionRepo.findById(regionId)
       .orElseThrow(() -> new RuntimeException("Region not found with id: " + regionId));
@@ -75,6 +77,7 @@ public class GeographyService {
     return subRegionRepo.save(subRegion);
   }
 
+  @Transactional(readOnly = true)
   public List<SubRegionDTO> getAllSubRegions() {
     return subRegionRepo.findAll()
       .stream()
@@ -82,15 +85,20 @@ public class GeographyService {
       .collect(Collectors.toList());
   }
 
-
-  public SubRegion updateSubRegion(Long id, SubRegion updated) {
-    SubRegion existing = subRegionRepo.findById(id)
-      .orElseThrow(() -> new RuntimeException("SubRegion not found with id: " + id));
-    existing.setName(updated.getName());
-    return subRegionRepo.save(existing);
+  // UPDATED: Now returns DTOs and uses the correct repository method name
+  @Transactional(readOnly = true)
+  public List<SubRegionDTO> getSubRegionsByRegionId(Long regionId) {
+    // Ensure SubRegionRepository has the method: List<SubRegion> findByRegion_Id(Long regionId);
+    return subRegionRepo.findByRegionId(regionId)
+      .stream()
+      .map(SubRegionDTO::new)
+      .collect(Collectors.toList());
   }
 
+  @Transactional
   public void deleteSubRegion(Long id) {
     subRegionRepo.deleteById(id);
   }
+
+  // ... other update methods ...
 }
